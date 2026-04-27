@@ -282,25 +282,6 @@ var firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 var db=firebase.database();
-  <script>
-// ===== REAL ONLINE USERS (Firebase) =====
-const onlineRef = db.ref("onlineUsers");
-
-// unique user id for this session
-const userId = "user_" + Math.random().toString(36).substr(2, 9);
-
-// mark user online
-onlineRef.child(userId).set(true);
-
-// remove when user leaves
-onlineRef.child(userId).onDisconnect().remove();
-
-// listen for total online users
-onlineRef.on("value", (snapshot) => {
-  const count = snapshot.numChildren();
-  document.getElementById("online").innerText = count;
-});
-</script>
   function clearShoutbox() {
   const confirmDelete = confirm("⚠️ Are you sure?\nThis will delete ALL messages permanently!");
 
@@ -969,11 +950,16 @@ function initVisitorSystem() {
     sessionStorage.setItem(userKey, "true");
   }
 
+  // Online users (approx)
+  let online = sessionStorage.getItem("onlineUsers");
+  online = online ? parseInt(online) + 1 : 1;
+  sessionStorage.setItem("onlineUsers", online);
 
   // UI update
   document.getElementById("total").innerText = total;
   document.getElementById("today").innerText = today;
   document.getElementById("yesterday").innerText = localStorage.getItem("yesterdayVisitors") || 0;
+  document.getElementById("online").innerText = online;
 }
 </script>
   <script>
