@@ -6,7 +6,28 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 body { font-family: Arial, sans-serif; background: #f0f8ff; margin: 0; padding: 0; color: #000; }/* Header & Footer */ .header-wrapper, .footer-wrapper { background: linear-gradient(135deg, #6a11cb, #2575fc); padding: 12px; } .header, .footer-inner { background: #FFFFCC; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border: 2px solid #333; border-radius: 10px; text-shadow: 2px 2px 4px #888888; max-width: 600px; margin: auto; } .header div { margin: 5px 0; }
+/* Hide both initially */
+.light-design, .dark-design {
+  display: none;
+}
 
+/* Light mode style */
+body:not(.dark) .light-design {
+  display: block;
+  background:#f1f5f9;
+  color:#000;
+  padding:10px;
+  border-radius:8px;
+}
+
+/* Dark mode style */
+body.dark .dark-design {
+  display: block;
+}
+
+/* colors */
+.green { color:#4ade80; }
+.orange { color:#facc15; }
 /* Section Titles */ .section-title { text-align: center; color: #fff; padding: 10px; font-weight: bold; font-size: 16px; } .title-class   { background: #2196F3; } .title-updates { background: #2F4F4F; } .title-practice{ background: #9C27B0; } .title-res     { background: #009688; } .title-shout   { background: #F44336; } .title-contact { background: #4B0082; }
 
 /* Boxes */ .box { border: 1px solid #999; margin: 5px; padding: 10px; background: #F9F9F9; font-size: 14px; } .box-welcome { border: 2px solid #9C27B0; margin: 10px; padding: 20px; font-size: 16px; background: #F3E5F5; text-align: center; border-radius: 8px; }
@@ -50,10 +71,22 @@ body.dark .msg b.username.admin * {
   color: #008000 !important;
 }#shoutbox button#sendBtn { padding: 6px 14px; font-size: 12px; border-radius: 4px; background-color: #4CAF50; color: #fff; cursor: pointer; width: auto; height: auto; } #shoutbox button#sendBtn:hover { background-color: #45a049; }
 
-/* Admin buttons style same as clear */ #clearBtn, #deleteSelectedBtn, #logoutBtn { padding: 6px 14px; font-size: 12px; border-radius: 4px; color: #fff; cursor: pointer; width: auto; height: auto; } #clearBtn { background-color: red; } #clearBtn:hover { background-color: darkred; } #deleteSelectedBtn { background-color: #8B0000; display:none; } #deleteSelectedBtn:hover { background-color: #8B0000; filter: brightness(0.85); } #logoutBtn { background-color: #555; display:none; } #logoutBtn:hover { background-color: #555; filter: brightness(0.85); }
+/* Admin buttons style same as clear */ #clearBtn {
+  display: none;
+  }, #deleteSelectedBtn, #logoutBtn { padding: 6px 14px; font-size: 12px; border-radius: 4px; color: #fff; cursor: pointer; width: auto; height: auto; } #clearBtn { background-color: red; } #clearBtn:hover { background-color: darkred; } #deleteSelectedBtn { background-color: #8B0000; display:none; } #deleteSelectedBtn:hover { background-color: #8B0000; filter: brightness(0.85); } #logoutBtn { background-color: #555; display:none; } #logoutBtn:hover { background-color: #555; filter: brightness(0.85); }
 
 #adminStatus { color:green; font-weight:bold; margin-bottom:6px; display:none; }
-
+#pendingRequests {
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 12px;
+  border-radius: 4px;
+  margin-top: 6px;
+  text-align: center;
+  background: #e3f2fd;
+  border-left: 4px solid #2196F3;
+  color: #0d47a1;
+}
 /* Progress bar */ #uploadProgress { width:100%; background:#eee; border-radius:4px; margin:6px 0; display:none; } #uploadBar { width:0%; height:8px; background:#4CAF50; border-radius:4px; }
 
 @media(max-width:600px){ #shoutbox .send-wrapper { justify-content:flex-start; margin-top:6px; } #shoutbox button{ width:100%; } } </style>
@@ -87,12 +120,30 @@ body.dark .msg b.username.admin * {
   aria-label="Search shoutbox messages"
   style="margin-bottom:8px; padding:8px; border-radius:6px; border:1px solid #ccc;">
   <div id="messages"></div>
-  <input type="text" id="username" placeholder="Name (Type your name here )">
-  <input type="text" id="message" placeholder="Type your message">
+  <input type="text" id="username" placeholder="Name (Type your name here)">
+  <input type="text" id="message" placeholder="Type or upload your Question/Doubt">
   <input type="file" id="photoInput" accept="image/*">
   <div id="uploadProgress"><div id="uploadBar"></div></div>
   <div class="send-wrapper"><button id="sendBtn">Send</button></div>
-  <div class="send-wrapper"><button id="clearBtn">Clear Shoutbox</button></div>
+  <div class="send-wrapper">
+  <div id="pendingRequests"
+  style="font-weight:bold;
+  padding:10px;
+  margin-top:8px;
+  background:#e3f2fd;
+    width:100%;
+  border-left:4px solid #2196F3;
+  text-align:center;
+  border-radius:6px;
+  color:#0d47a1;
+  box-sizing:border-box;">
+  ⏳ Loading pending requests...
+  </div>
+</div>
+    <div id="userStatusMsg" style="display:none; font-weight:bold; margin-bottom:6px;"></div>
+<div class="send-wrapper">
+  <button id="clearBtn" onclick="clearShoutbox()">Clear Shoutbox</button>
+</div>  
   <div class="send-wrapper"><button id="deleteSelectedBtn">Delete Selected</button></div>
   <div class="send-wrapper"><button id="logoutBtn">Admin Logout</button></div>
 </div><!-- Updates --><div class="section-title title-updates" id="updates">Latest Updates</div>
@@ -104,9 +155,35 @@ body.dark .msg b.username.admin * {
   <div id="workingUpdates" style="margin:10px 0; font-weight:bold; color:gold;">
   No active working doubts.
   </div>
-  • <b>Formula Sheet (6–12)</b> — Download PDF (Updated Aug 2025)<br>
-  • <b>Sample Paper 2024–25</b> — Solutions added<br>
-  • <b>Weekly Test</b> — Integrals (Sun, 8 PM)
+  <div id="updatesContent">
+
+  <!-- 🌞 Light Mode (Design 3 – Card Style) -->
+  <div class="light-design">
+    <b>🚀  Maths Updates (Session 2026–27)</b><br><br>
+
+    📘 Class 6  → ✔ Ready <br>
+    📗 Class 7  → ✔ Ready <br>
+    📒 Class 8  → ✔ Ready <br>
+    🗄️ Class 9  → ⏳ Updating  (Old Available) <br>
+    📔 Class 10 → ✔ Ready <br>
+    📕 Class 11 → ⏳ Updating  (Old Available) <br>
+    📓 Class 12 → ✔ Ready <br>
+  </div>
+
+  <!-- 🌙 Dark Mode (Design 4 – Badge Style) -->
+  <div class="dark-design">
+    <b>🚀  Maths Updates (Session 2026–27)</b><br><br>
+
+    📘Class 6  → <span class="green">✔ Ready</span><br>
+    📗Class 7  → <span class="green">✔ Ready</span><br>
+    📒Class 8  → <span class="green">✔ Ready</span><br>
+    🗄️Class 9  → <span class="orange">⏳ Updating  (Old Available) </span><br>
+    📔Class 10 → <span class="green">✔ Ready</span><br>
+    📕Class 11 → <span class="orange">⏳ Updating  (Old Available) </span><br>
+    📓Class 12 → <span class="green">✔ Ready</span>
+  </div>
+
+</div>
 </div><!-- Classes --><div class="section-title title-class">Select Your Class</div>
 <div class="box class-grid">
   <button class="btn btn6" onclick="location.href='https://dalbir46.github.io/Awareness_Academy/class6.html'">Class 6</button>
@@ -128,15 +205,68 @@ body.dark .msg b.username.admin * {
   • NCERT Solutions (All Classes)<br>
   • Formula Sheets<br>
   • Sample Papers
-</div><!-- Contact --><div class="section-title title-contact">Contact & Support</div>
+</div>
+<!-- Contact -->
+<div class="section-title title-contact">Contact & Support</div>
+
 <div class="box" id="contact-buttons">
-  Email: dalbir46@gmail.com • WhatsApp: +91 9468067047<br><br><button id="whatsapp-btn" onclick="window.open('https://chat.whatsapp.com/I3kosBY1yVp2irNXhkPDZV?mode=ems_share_t','_blank')"><i class="fab fa-whatsapp"></i> Join us on WhatsApp</button> <button id="telegram-btn" onclick="window.open('https://t.me/Mathematic_hub','_blank')"><i class="fab fa-telegram-plane"></i> Join us on Telegram</button><button id="youtube-btn" onclick="window.open('https://youtube.com/@dalbirsingh7203?si=FuZAzq9qOqXtxCSi','_blank')">
-  <i class="fab fa-youtube"></i>Join us on YouTube
+
+  
+
+  <br>
+
+  <button id="whatsapp-btn" onclick="window.open('https://chat.whatsapp.com/EqJfDpEG5mQCppNG4OqJsR','_blank')">
+    <i class="fab fa-whatsapp"></i> Join us on WhatsApp
   </button>
 
-</div><!-- Navigation Bar --><div class="linkbar">
+  <button id="telegram-btn" onclick="window.open('https://t.me/Mathematic_hub','_blank')">
+    <i class="fab fa-telegram-plane"></i> Join us on Telegram
+  </button>
+
+  <button id="youtube-btn" onclick="window.open('https://youtube.com/@dalbirsingh7203?si=FuZAzq9qOqXtxCSi','_blank')">
+    <i class="fab fa-youtube"></i> Join us on YouTube
+  </button>
+
+</div>
+  
+<!-- Navigation Bar --><div class="linkbar">
   <a href="#">Home</a> | <a href="#updates">Latest Updates</a> | <a href="#practice">Practice Zone</a> | <a href="#resources">Resources</a>
-</div><!-- Footer --><div class="footer-wrapper">
+</div>
+  <div id="visitorBox" style="
+  margin:15px auto;
+  max-width:320px;
+  background:linear-gradient(135deg,#1e293b,#334155);
+  padding:12px;
+  border-radius:10px;
+  text-align:center;
+  color:white;
+  box-shadow:0 0 10px rgba(0,0,0,0.4);
+">
+
+  <div style="font-weight:bold; color:#38bdf8;">📊 Visitor Stats</div>
+
+  <div> 👤 Total: <span id="total">0</span></div>
+  <div>Today: <span id="today">0</span></div>
+  <div> Yesterday: <span id="yesterday">0</span></div>
+
+  <div style="color:#4ade80; font-weight:bold;">
+    🟢 Online: <span id="online">0</span>
+  </div>
+
+  </div>
+  <div style="margin-top:15px; padding:10px; text-align:center; background:black; color:#0f0; border-radius:8px;">
+    🌐 Developed & Managed by  
+    <b style="text-shadow:0 0 1px #0f0;">Dalbir & Rahul</b><br>
+
+    📞 
+    <a href="tel:9468067047" style="color:#0f0; text-decoration:underline;"> 94680-67047</a> |
+    <a href="tel:8053110551" style="color:#0f0; text-decoration:underline;"> 80531-10551</a>
+
+    <div style="font-size:11px; opacity:0.7; margin-top:4px;">
+      (Tap number to call)
+    </div>
+  </div>
+  <!-- Footer --><div class="footer-wrapper">
   <div class="footer-inner">
     © 2025 Mathematics Hub
   </div>
@@ -152,6 +282,47 @@ var firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 var db=firebase.database();
+  function clearShoutbox() {
+  const confirmDelete = confirm("⚠️ Are you sure?\nThis will delete ALL messages permanently!");
+
+  if (!confirmDelete) return;
+
+  db.ref("shoutbox").remove()
+    .then(() => {
+      alert("✅ Shoutbox cleared successfully!");
+    })
+    .catch(err => {
+      alert("❌ Error: " + err.message);
+    });
+}
+  function updatePendingRequests() {
+  db.ref("shoutbox").on("value", snap => {
+    let count = 0;
+
+    snap.forEach(child => {
+      const data = child.val();
+      if (data.approved === false) {
+        count++;
+      }
+    });
+
+    const el = document.getElementById("pendingRequests");
+    if (!el) return;
+
+    if (count === 0) {
+      el.innerHTML = "✅ No pending requests right now";
+      el.style.background = "#d4edda";
+      el.style.borderLeft = "4px solid green";
+    } else {
+      el.innerHTML = `⏳ <b>${count}</b> requests need approval`;
+      el.style.background = "#fff3cd";
+      el.style.borderLeft = "4px solid orange";
+    }
+  });
+}
+
+// call once
+updatePendingRequests();
 const ADMIN_PASSWORD="password";
 const IMGBB_API_KEY="9a1627658ec3732fd03cb87cbff0ed66";
 // === Function to Update Doubt Stats in "Latest Updates" ===
@@ -240,7 +411,7 @@ const IMGBB_API_KEY="9a1627658ec3732fd03cb87cbff0ed66";
   }
 
 // Simple HTML-escape helper
-function escapeHtml(str){
+  function escapeHtml(str){
   if (str === null || str === undefined) return "";
   return String(str)
     .replace(/&/g,"&amp;")
@@ -249,7 +420,18 @@ function escapeHtml(str){
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#039;");
 }
+function showUserMessage(text, color="green") {
+  const el = document.getElementById("userStatusMsg");
+  if (!el) return;
 
+  el.style.display = "block";
+  el.style.color = color;
+  el.textContent = text;
+
+  setTimeout(() => {
+    el.style.display = "none";
+  }, 7000);
+  }
 function isAdminAuthenticated(){ return sessionStorage.getItem("isAdmin")==="true"; }
 function setAdminAuthenticated(flag){
   if(flag) sessionStorage.setItem("isAdmin","true");
@@ -263,9 +445,10 @@ function updateAdminUI(){
 
   const logoutBtn = document.getElementById("logoutBtn");
   const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
+  const clearBtn = document.getElementById("clearBtn");
   if(logoutBtn) logoutBtn.style.display = isAdminAuthenticated() ? "inline-block" : "none";
   if(deleteSelectedBtn) deleteSelectedBtn.style.display = isAdminAuthenticated() ? "inline-block" : "none";
-
+if(clearBtn) clearBtn.style.display = isAdminAuthenticated() ? "inline-block" : "none";
   updateCheckboxes();
 }
 
@@ -279,7 +462,9 @@ function formatDateTime(ts){
 }
 
 // add single message to DOM
-async function addMessageToDOM(key, data){
+async function addMessageToDOM(key, data){if (!data.approved && !isAdminAuthenticated()) {
+    return; // 👈 ADD THIS
+  }
   // create container
   const div = document.createElement("div");
   div.classList.add("msg");
@@ -315,12 +500,28 @@ async function addMessageToDOM(key, data){
 
   // combine
   div.appendChild(header);
+                                          if (!data.approved) {
+  const pendingTag = document.createElement("div");
+  pendingTag.style.color = "orange";
+  pendingTag.style.fontSize = "12px";
+  pendingTag.textContent = "⏳ Need Approval";
+  div.appendChild(pendingTag);
+  }
   const msgContent = document.createElement("div");
   msgContent.innerHTML = messageHtml + photoHtml;
   div.appendChild(msgContent);
 
   // admin buttons only if admin and message contains doubt/solve
   if (isAdminAuthenticated()) {
+if (!data.approved) {
+  const btns = document.createElement("div");
+  btns.style.marginTop = "6px";
+  btns.innerHTML = `
+    <button class="approve-btn" data-key="${key}" style="background:green;color:#fff;border:none;padding:5px 8px;border-radius:4px;">Approve</button>
+    <button class="reject-btn" data-key="${key}" style="background:red;color:#fff;border:none;padding:5px 8px;border-radius:4px;">Reject</button>
+  `;
+  div.appendChild(btns);
+  }
     const lowerMsg = (data.message || "").toLowerCase();
     if (lowerMsg.includes("doubt") || lowerMsg.includes("solve")) {
       const btns = document.createElement("div");
@@ -330,6 +531,7 @@ async function addMessageToDOM(key, data){
         <button class="mark-working" data-key="${key}" style="background:#FFB300;border:none;padding:6px 8px;border-radius:4px;cursor:pointer;margin-right:6px;">Mark Working</button>
         <button class="mark-solved" data-key="${key}" style="background:#2E8B57;border:none;padding:6px 8px;border-radius:4px;color:#fff;cursor:pointer;">Mark Solved</button>
       `;
+      
       div.appendChild(btns);
     }
     // if admin, prepend a checkbox to the header
@@ -486,14 +688,16 @@ if (!name && !msg && (!photoEl || !photoEl.files[0])) return alert("Enter messag
 
 // Admin login shortcut if someone enters name "admin"
 if (name.toLowerCase() === "admin" && !isAdminAuthenticated()){
-const pwd = prompt("Enter admin password:");
-if (pwd === ADMIN_PASSWORD){
-setAdminAuthenticated(true);
-} else {
-alert("Incorrect password.");
-return;
-}
-}
+  const pwd = prompt("Enter admin password:");
+  if (pwd === ADMIN_PASSWORD){
+    setAdminAuthenticated(true);
+    showUserMessage("✅ Admin login successful");
+    return; // 👈 YAHI MAGIC LINE HAI
+  } else {
+    alert("Incorrect password.");
+    return;
+  }
+  }
 
 let photoURL = "";
 if (photoEl && photoEl.files[0]){
@@ -506,8 +710,13 @@ return;
 }
 }
 
-const data = { name: name || "Guest", message: msg || "", time: Date.now(), photoURL };
+const data = { name: name || "Guest", message: msg || "", time: Date.now(), photoURL, approved: false };
 db.ref("shoutbox").push(data);
+  if (photoURL) {
+  showUserMessage("✅ 📷 Image sent successfully! ⏳ It will be visible after approval.");
+} else {
+  showUserMessage("✅ 📩 Message sent successfully! ⏳ It will be visible after admin approval.");
+  }
 if (msgEl) msgEl.value = "";
 });
 
@@ -671,6 +880,17 @@ document.head.appendChild(style);
 
 // === Handle Admin Mark Buttons (delegated) ===
 document.addEventListener("click", async (e) => {
+  // Approve
+if (e.target.classList.contains("approve-btn")) {
+  const key = e.target.getAttribute("data-key");
+  db.ref("shoutbox/" + key).update({ approved: true });
+}
+
+// Reject
+if (e.target.classList.contains("reject-btn")) {
+  const key = e.target.getAttribute("data-key");
+  db.ref("shoutbox/" + key).remove();
+}
 if (e.target.classList.contains("mark-working") || e.target.classList.contains("mark-solved")) {
 if (!isAdminAuthenticated()) return alert("Admin only");
 
@@ -679,6 +899,7 @@ const status = e.target.classList.contains("mark-working") ? "Working" : "Solved
 
 try {
 await db.ref("shoutbox/" + key).update({ status });
+  
 // update DOM element if exists
 const el = document.querySelector(`.msg[data-key='${key}']`);
 if (el) el.dataset.status = status;
@@ -715,6 +936,8 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   });
 });
+    // call visitor system
+initVisitorSystem(); // ya jo bhi function naam diya tha
 </script>
 </body>
 </html>
