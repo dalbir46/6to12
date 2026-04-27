@@ -922,6 +922,47 @@ updateWorkingSection();
 });
 </script>
   <script>
+// ===== Visitor Counter System =====
+function initVisitorSystem() {
+  const todayKey = new Date().toDateString();
+  const userKey = "visitor_" + todayKey;
+
+  // LocalStorage use kar rahe hain (simple & fast)
+  let total = localStorage.getItem("totalVisitors") || 0;
+  let today = localStorage.getItem("todayVisitors") || 0;
+  let yesterday = localStorage.getItem("yesterdayVisitors") || 0;
+  let lastVisit = localStorage.getItem("lastVisitDate");
+
+  // Agar new day hai
+  if (lastVisit !== todayKey) {
+    localStorage.setItem("yesterdayVisitors", today);
+    today = 0;
+    localStorage.setItem("lastVisitDate", todayKey);
+  }
+
+  // Same user ko dobara count nahi karna
+  if (!sessionStorage.getItem(userKey)) {
+    total++;
+    today++;
+
+    localStorage.setItem("totalVisitors", total);
+    localStorage.setItem("todayVisitors", today);
+    sessionStorage.setItem(userKey, "true");
+  }
+
+  // Online users (approx)
+  let online = sessionStorage.getItem("onlineUsers");
+  online = online ? parseInt(online) + 1 : 1;
+  sessionStorage.setItem("onlineUsers", online);
+
+  // UI update
+  document.getElementById("total").innerText = total;
+  document.getElementById("today").innerText = today;
+  document.getElementById("yesterday").innerText = localStorage.getItem("yesterdayVisitors") || 0;
+  document.getElementById("online").innerText = online;
+}
+</script>
+  <script>
 // 🔍 Shoutbox Search Filter
 document.addEventListener('DOMContentLoaded', function(){
   const searchBox = document.getElementById('searchBox');
