@@ -6,10 +6,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   /* ===== TEACHER PROFILE ISOLATED ===== */
-.teacher-profile *{
-all:unset;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
+..teacher-profile *{
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
 }
 
 .teacher-profile{
@@ -36,10 +35,10 @@ body:not(.dark) .teacher-profile{
 
 /* HERO */
 .teacher-profile .hero{
-text-align:center;
-padding:60px 20px;
-background:linear-gradient(135deg,#1e293b,#020617);
-border-radius:15px;
+  text-align:center;
+  padding:40px 20px;
+  border-radius:15px;
+  position:relative;
 }
 
 body:not(.dark) .teacher-profile .hero{
@@ -47,13 +46,15 @@ background:linear-gradient(135deg,#e0f2fe,#ffffff);
 }
 
 .teacher-profile .hero img{
-width:120px;
-height:120px;
-border-radius:50%;
-object-fit:cover;
-border:3px solid var(--accent);
-margin-bottom:15px;
-}
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid var(--accent);
+
+  display:block;
+  margin:0 auto 15px auto;
+  }
 
 .teacher-profile .hero h1{
 font-size:32px;
