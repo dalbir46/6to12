@@ -7,29 +7,34 @@
 <style>
   /* ===== DESIGN 2 (FIXED) ===== */
 .profile-heading{
+.profile-heading{
   width:100%;
   text-align:center;
   font-size:26px;
   font-weight:800;
   padding:12px;
   letter-spacing:1px;
-  border-bottom:4px solid;
+
+  /* ❌ remove border-bottom */
+  border:3px solid;
+  border-radius:10px;
+  margin:10px 0;
 }
 
-/* 🌞 LIGHT MODE (EXACT DESIGN 2) */
+/* 🌞 LIGHT MODE (same design feel) */
 body:not(.dark) .profile-heading{
   background:#e0f2fe;
   color:#2563eb;
   border-color:#2563eb;
 }
 
-/* 🌙 DARK MODE (EXACT DESIGN 2 + LOW GLOW) */
+/* 🌙 DARK MODE (same design + glow control) */
 body.dark .profile-heading{
-  background:#000;        /* original black */
-  color:#00f5a0;          /* neon green */
+  background:#000;
+  color:#00f5a0;
   border-color:#00f5a0;
 
-  /* 🔥 sirf glow kam kiya */
+  /* 🔥 soft glow */
   text-shadow:0 0 5px rgba(0,245,160,0.4);
   }
   /* ===== TEACHER PROFILE ISOLATED ===== */
