@@ -5,6 +5,124 @@
 <title>Mathematics Hub Class 6 to 12</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
+  /* ===== TEACHER PROFILE ISOLATED ===== */
+.teacher-profile *{
+all:unset;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+.teacher-profile{
+--bg:#0b0f1a;
+--card:#ffffff0d;
+--text:#ffffff;
+--subtext:#aaaaaa;
+--accent:#00f5a0;
+background:var(--bg);
+color:var(--text);
+padding:30px 15px;
+border-radius:15px;
+margin:15px;
+}
+
+/* LIGHT MODE SUPPORT */
+body:not(.dark) .teacher-profile{
+--bg:#f5f7fb;
+--card:#ffffff;
+--text:#111;
+--subtext:#555;
+--accent:#2563eb;
+}
+
+/* HERO */
+.teacher-profile .hero{
+text-align:center;
+padding:60px 20px;
+background:linear-gradient(135deg,#1e293b,#020617);
+border-radius:15px;
+}
+
+body:not(.dark) .teacher-profile .hero{
+background:linear-gradient(135deg,#e0f2fe,#ffffff);
+}
+
+.teacher-profile .hero img{
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+border:3px solid var(--accent);
+margin-bottom:15px;
+}
+
+.teacher-profile .hero h1{
+font-size:32px;
+background:linear-gradient(90deg,var(--accent),#00d9f5);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+.teacher-profile .hero p{
+margin-top:10px;
+color:var(--subtext);
+}
+
+.teacher-profile .badges{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:10px;
+margin-top:15px;
+}
+
+.teacher-profile .badge{
+padding:6px 12px;
+border-radius:20px;
+background:var(--card);
+}
+
+.teacher-profile .cta{
+margin-top:15px;
+padding:10px 20px;
+border-radius:30px;
+border:none;
+background:linear-gradient(90deg,var(--accent),#00d9f5);
+color:black;
+font-weight:bold;
+cursor:pointer;
+}
+
+/* GRID */
+.teacher-profile .grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+margin-top:25px;
+}
+
+.teacher-profile .card{
+padding:15px;
+border-radius:15px;
+background:var(--card);
+border:1px solid rgba(255,255,255,0.1);
+}
+
+.teacher-profile ul{
+list-style:none;
+}
+
+.teacher-profile ul li{
+margin:6px 0;
+padding:6px;
+border-radius:8px;
+background:rgba(0,0,0,0.1);
+}
+
+body:not(.dark) .teacher-profile ul li{
+background:#f1f5f9;
+  }
+
+  
 body { font-family: Arial, sans-serif; background: #f0f8ff; margin: 0; padding: 0; color: #000; }/* Header & Footer */ .header-wrapper, .footer-wrapper { background: linear-gradient(135deg, #6a11cb, #2575fc); padding: 12px; } .header, .footer-inner { background: #FFFFCC; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border: 2px solid #333; border-radius: 10px; text-shadow: 2px 2px 4px #888888; max-width: 600px; margin: auto; } .header div { margin: 5px 0; }
 /* Hide both initially */
 .light-design, .dark-design {
@@ -104,7 +222,24 @@ body.dark .msg b.username.admin * {
     <option value="light">🌞 Light Mode</option>
     <option value="dark">🌙 Dark Mode</option>
   </select>
-</div><!-- Notice Board --><div class="welcome-cover">
+</div>
+  <div class="teacher-profile">
+
+<div class="hero">
+<img src="YOUR_PHOTO_LINK">
+<h1>Dalbir Singh</h1>
+<p>Teacher Profile</p>
+
+<div class="badges">
+<div class="badge">🎓 B.Sc</div>
+<div class="badge">🎓 M.Sc</div>
+<div class="badge">📘 B.Ed</div>
+<div class="badge">✅ CTET Qualified</div>
+<div class="badge">✅ HTET Qualified</div>
+</div>
+</div>
+  </div>
+  <!-- Notice Board --><div class="welcome-cover">
   <div class="section-title"><u>Notice Board</u> :-</div>
 </div><div class="box-welcome">
   This website is specially designed for Students of class 6 to class 12 to clear their Maths problem in simple way यह वेबसाइट विशेष रूप से कक्षा 6 से कक्षा 12 तक के विद्यार्थियों के लिए आसान तरीके से गणित की समस्याओं को हल करने हेतु डिज़ाइन की गई है।   
