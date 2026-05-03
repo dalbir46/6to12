@@ -5,6 +5,28 @@
 <title>Mathematics Hub Class 6 to 12</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
+  /* 🔥 FULL WIDTH TEACHER PROFILE HEADER */
+.profile-heading{
+  width:100%;
+  text-align:center;
+  font-size:28px;
+  font-weight:800;
+  padding:14px;
+  letter-spacing:1px;
+}
+
+/* 🌞 LIGHT MODE */
+body:not(.dark) .profile-heading{
+  background:linear-gradient(90deg,#2563eb,#60a5fa);
+  color:#fff;
+}
+
+/* 🌙 DARK MODE (soft, no flash) */
+body.dark .profile-heading{
+  background:linear-gradient(90deg,#0ea5e9,#22c55e);
+  color:#fff;
+  box-shadow:0 0 8px rgba(34,197,94,0.4);
+}
   /* ===== TEACHER PROFILE ISOLATED ===== */
 ..teacher-profile *{
   box-sizing:border-box;
@@ -356,12 +378,14 @@ body.dark .msg b.username.admin * {
 <!-- Navigation Bar --><div class="linkbar">
   <a href="#">Home</a> | <a href="#updates">Latest Updates</a> | <a href="#practice">Practice Zone</a> | <a href="#resources">Resources</a>
 </div>
+  <div class="profile-heading">👨‍🏫 Teacher Profile</div>
+  
     <div class="teacher-profile">
 
 <div class="hero">
 <img src="https://raw.githubusercontent.com/dalbir46/6to12/refs/heads/main/file_000000006b0471fa9fe23fc8d54e9c56.png">
 <h1>Dalbir Singh</h1>
-<p>Teacher Profile</p>
+<p> 6 Years Teaching Experience</p>
 
 <div class="badges">
 <div class="badge">🎓 B.Sc</div>
