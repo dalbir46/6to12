@@ -286,6 +286,53 @@ var firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 var db=firebase.database();
+  // ===== REAL VISITOR SYSTEM (Firebase Based) =====
+
+// Unique visitor (same browser repeat count na ho)
+const visitorKey = "visited_today_" + new Date().toDateString();
+
+if (!localStorage.getItem(visitorKey)) {
+  const visitRef = db.ref("visitors");
+
+  // Total visitors increase
+  visitRef.child("total").transaction(current => (current || 0) + 1);
+
+  // Today visitors
+  const todayKey = new Date().toISOString().slice(0,10);
+  visitRef.child("today").child(todayKey).transaction(current => (current || 0) + 1);
+
+  localStorage.setItem(visitorKey, "true");
+}
+
+// ===== ONLINE USERS =====
+const userRef = db.ref("onlineUsers").push();
+
+// mark user online
+userRef.set(true);
+
+// auto remove when user disconnects
+userRef.onDisconnect().remove();
+
+// count online users
+db.ref("onlineUsers").on("value", snap => {
+  document.getElementById("online").innerText = snap.numChildren();
+});
+
+// ===== SHOW TOTAL + TODAY =====
+db.ref("visitors/total").on("value", snap => {
+  document.getElementById("total").innerText = snap.val() || 0;
+});
+
+const todayKey = new Date().toISOString().slice(0,10);
+
+db.ref("visitors/today/" + todayKey).on("value", snap => {
+  document.getElementById("today").innerText = snap.val() || 0;
+});
+const yesterdayDate = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+
+db.ref("visitors/today/" + yesterdayDate).on("value", snap => {
+  document.getElementById("yesterday").innerText = snap.val() || 0;
+});
   function clearShoutbox() {
   const confirmDelete = confirm("⚠️ Are you sure?\nThis will delete ALL messages permanently!");
 
@@ -926,47 +973,6 @@ updateWorkingSection();
 });
 </script>
   <script>
-// ===== Visitor Counter System =====
-function initVisitorSystem() {
-  const todayKey = new Date().toDateString();
-  const userKey = "visitor_" + todayKey;
-
-  // LocalStorage use kar rahe hain (simple & fast)
-  let total = localStorage.getItem("totalVisitors") || 0;
-  let today = localStorage.getItem("todayVisitors") || 0;
-  let yesterday = localStorage.getItem("yesterdayVisitors") || 0;
-  let lastVisit = localStorage.getItem("lastVisitDate");
-
-  // Agar new day hai
-  if (lastVisit !== todayKey) {
-    localStorage.setItem("yesterdayVisitors", today);
-    today = 0;
-    localStorage.setItem("lastVisitDate", todayKey);
-  }
-
-  // Same user ko dobara count nahi karna
-  if (!sessionStorage.getItem(userKey)) {
-    total++;
-    today++;
-
-    localStorage.setItem("totalVisitors", total);
-    localStorage.setItem("todayVisitors", today);
-    sessionStorage.setItem(userKey, "true");
-  }
-
-  // Online users (approx)
-  let online = sessionStorage.getItem("onlineUsers");
-  online = online ? parseInt(online) + 1 : 1;
-  sessionStorage.setItem("onlineUsers", online);
-
-  // UI update
-  document.getElementById("total").innerText = total;
-  document.getElementById("today").innerText = today;
-  document.getElementById("yesterday").innerText = localStorage.getItem("yesterdayVisitors") || 0;
-  document.getElementById("online").innerText = online;
-}
-</script>
-  <script>
 // 🔍 Shoutbox Search Filter
 document.addEventListener('DOMContentLoaded', function(){
   const searchBox = document.getElementById('searchBox');
@@ -981,8 +987,6 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   });
 });
-    // call visitor system
-initVisitorSystem(); // ya jo bhi function naam diya tha
 </script>
 </body>
 </html>
