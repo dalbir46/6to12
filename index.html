@@ -5,28 +5,33 @@
 <title>Mathematics Hub Class 6 to 12</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-  /* 🔥 FULL WIDTH TEACHER PROFILE HEADER */
+  /* ===== DESIGN 2 (FIXED) ===== */
 .profile-heading{
   width:100%;
   text-align:center;
-  font-size:28px;
+  font-size:26px;
   font-weight:800;
-  padding:14px;
+  padding:12px;
   letter-spacing:1px;
+  border-bottom:4px solid;
 }
 
-/* 🌞 LIGHT MODE */
+/* 🌞 LIGHT MODE (same clean look) */
 body:not(.dark) .profile-heading{
-  background:linear-gradient(90deg,#2563eb,#60a5fa);
-  color:#fff;
+  background:#e0f2fe;
+  color:#2563eb;
+  border-color:#2563eb;
 }
 
-/* 🌙 DARK MODE (soft, no flash) */
+/* 🌙 DARK MODE (FLASH KAM KIYA) */
 body.dark .profile-heading{
-  background:linear-gradient(90deg,#0ea5e9,#22c55e);
-  color:#fff;
-  box-shadow:0 0 8px rgba(34,197,94,0.4);
-}
+  background:#0f172a;   /* pehle se soft */
+  color:#38bdf8;
+  border-color:#22c55e;
+
+  /* 🔥 glow kam kiya */
+  box-shadow:0 0 4px rgba(34,197,94,0.3);
+  }
   /* ===== TEACHER PROFILE ISOLATED ===== */
 ..teacher-profile *{
   box-sizing:border-box;
